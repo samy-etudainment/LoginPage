@@ -19,7 +19,7 @@ class _LoginState extends State<Signup> {
   static const String imageBackground = "assets/background.jpg";
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
-  
+  var formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -38,7 +38,7 @@ class _LoginState extends State<Signup> {
       _btnController.success();
       const Duration(milliseconds: 1750);
       Get.offAll(() => const Login());
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       _btnController.error();
       await Future.delayed(const Duration(milliseconds: 1750));
       _btnController.reset();
@@ -92,17 +92,31 @@ class _LoginState extends State<Signup> {
                       ),
                       height: 70,
                       width: width,
-                      child: TextField(
-                        enableSuggestions: false,
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          labelText: "E-mail",
-                          labelStyle: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blueGrey),
+                      child: Form(
+                        key: formKey,
+                        child: TextFormField(
+                          enableSuggestions: false,
+                          controller: _emailController,
+                          cursorErrorColor: Colors.blueAccent,
+                          validator: (value) {
+                            if (value!.isEmpty) return 'Please add your e-mail';
+                            final emailRegex = RegExp(
+                              r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$',
+                            );
+                            if (!emailRegex.hasMatch(value)) {
+                              return "Enter a valid email";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: "E-mail",
+                            labelStyle: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey),
+                            ),
                           ),
                         ),
                       ),
@@ -135,7 +149,11 @@ class _LoginState extends State<Signup> {
                       controller: _btnController,
                       onPressed: () {
                         setState(() {
-                          registration();
+                          if (formKey.currentState!.validate()) {
+                            registration();
+                          } else {
+                            _btnController.reset();
+                          }
                         });
                       },
                       child: Text(

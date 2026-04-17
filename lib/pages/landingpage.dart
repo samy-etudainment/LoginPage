@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:login_page/models/auth_firebase.dart';
 import 'package:login_page/pages/login.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
@@ -25,10 +26,9 @@ class _LandinpageState extends State<Landinpage> {
       _btnController.success();
       await Future.delayed(const Duration(milliseconds: 1750));
       Get.offAll(() => const Login());
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       _btnController.error();
       _btnController.reset();
-      print("MISY ERREUR EEEEEEEEE");
     }
   }
 
@@ -41,10 +41,13 @@ class _LandinpageState extends State<Landinpage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrangeAccent.shade100,
-        title: Text(
-          "Welcome",
-          style: TextStyle(color: Colors.black, fontSize: 30),
-        ),
+        title: Obx(() {
+          final user = authController.currentUser.value;
+          return Text(
+            "Welcome ${user?.email ?? 'Guest'}",
+            style: TextStyle(fontSize: 22),
+          );
+        }),
       ),
       body: Stack(
         children: [

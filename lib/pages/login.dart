@@ -20,6 +20,7 @@ class _LoginState extends State<Login> {
   static const String imageBackground = "assets/background.jpg";
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
+  var formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -38,11 +39,10 @@ class _LoginState extends State<Login> {
       await Future.delayed(const Duration(milliseconds: 1750));
       _btnController.reset();
       Get.offAll(() => const Landinpage());
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       _btnController.error();
       await Future.delayed(const Duration(milliseconds: 1750));
       _btnController.reset();
-      print("MISY ERREUR EEEEEEEEE");
     }
   }
 
@@ -92,17 +92,31 @@ class _LoginState extends State<Login> {
                       ),
                       height: 70,
                       width: width,
-                      child: TextField(
-                        enableSuggestions: false,
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          labelText: "E-mail",
-                          labelStyle: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blueGrey),
+                      child: Form(
+                        key: formKey,
+                        child: TextFormField(
+                          enableSuggestions: false,
+                          controller: _emailController,
+                          cursorErrorColor: Colors.blueAccent,
+                          validator: (value) {
+                            if (value!.isEmpty) return 'Please add your e-mail';
+                            final emailRegex = RegExp(
+                              r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$',
+                            );
+                            if (!emailRegex.hasMatch(value)) {
+                              return "Enter a valid email";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: "E-mail",
+                            labelStyle: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey),
+                            ),
                           ),
                         ),
                       ),
@@ -146,6 +160,7 @@ class _LoginState extends State<Login> {
                             child: Text(
                               "Sign up !",
                               style: TextStyle(
+                                fontWeight: FontWeight.w600,
                                 color: Colors.deepOrangeAccent.shade100,
                                 fontSize: 15,
                               ),
@@ -154,7 +169,6 @@ class _LoginState extends State<Login> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 40),
                     RoundedLoadingButton(
                       errorColor: Colors.redAccent,
@@ -164,7 +178,11 @@ class _LoginState extends State<Login> {
                       controller: _btnController,
                       onPressed: () {
                         setState(() {
-                          login();
+                          if (formKey.currentState!.validate()) {
+                            login();
+                          } else {
+                            _btnController.reset();
+                          }
                         });
                       },
                       child: Text(

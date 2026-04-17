@@ -33,6 +33,6 @@ class AuthController extends GetxController {
   }
 
   Future<void> signOut() async {
-    await firebaseAuth.signOut();
+    await FirebaseAuth.instance.signOut();
   }
 }
