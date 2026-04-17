@@ -5,6 +5,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:login_page/models/auth_firebase.dart';
+import 'package:login_page/pages/components/card_around.dart';
 import 'package:login_page/pages/landingpage.dart';
 import 'package:login_page/pages/login.dart';
 import 'dart:async';

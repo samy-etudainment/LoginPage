@@ -5,6 +5,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:login_page/models/auth_firebase.dart';
+import 'package:login_page/pages/components/card_around.dart';
 import 'package:login_page/pages/login.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
@@ -61,24 +62,29 @@ class _LandinpageState extends State<Landinpage> {
               ),
             ),
           ),
-          Center(
-            child: RoundedLoadingButton(
-              errorColor: Colors.redAccent,
-              resetDuration: const Duration(milliseconds: 1250),
-              color: Colors.deepOrangeAccent.shade100,
-              successColor: Colors.deepOrangeAccent,
-              controller: _btnController,
-              onPressed: () {
-                setState(() {
-                  logOut();
-                });
-              },
-              child: Text(
-                "Log Out",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 20),
+          Column(
+            children: [
+              OrbitImagesWidget(),
+              Center(
+                child: RoundedLoadingButton(
+                  errorColor: Colors.redAccent,
+                  resetDuration: const Duration(milliseconds: 1250),
+                  color: Colors.deepOrangeAccent.shade100,
+                  successColor: Colors.deepOrangeAccent,
+                  controller: _btnController,
+                  onPressed: () {
+                    setState(() {
+                      logOut();
+                    });
+                  },
+                  child: Text(
+                    "Log Out",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ],
       ),
