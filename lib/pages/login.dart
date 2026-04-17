@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login_page/models/auth_firebase.dart';
 import 'package:login_page/pages/signup.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:get/get.dart';
@@ -12,10 +14,37 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final AuthController authController = Get.find<AuthController>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   static const String imageBackground = "assets/background.jpg";
-  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void login() async {
+    try {
+      await authController.login(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      _btnController.success();
+      await Future.delayed(const Duration(milliseconds: 1750));
+      _btnController.reset();
+      Get.offAll(() => const Landinpage());
+    } on FirebaseAuthException catch (e) {
+      _btnController.error();
+      await Future.delayed(const Duration(milliseconds: 1750));
+      _btnController.reset();
+      print("MISY ERREUR EEEEEEEEE");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +76,7 @@ class _LoginState extends State<Login> {
                       height: 50,
                       width: width,
                       child: Text(
-                        "Sign up !",
+                        "Let's login !",
                         style: TextStyle(
                           fontSize: width * 0.09,
                           color: Colors.white,
@@ -56,7 +85,11 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(right: 30, left: 30, top: 30),
+                      margin: const EdgeInsets.only(
+                        right: 30,
+                        left: 30,
+                        top: 30,
+                      ),
                       height: 70,
                       width: width,
                       child: TextField(
@@ -74,7 +107,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                     ),
-          
+
                     const SizedBox(height: 20),
                     Container(
                       margin: const EdgeInsets.only(right: 30, left: 30),
@@ -96,9 +129,9 @@ class _LoginState extends State<Login> {
                     Row(
                       children: [
                         Container(
-                          margin: const EdgeInsets.only( left: 30),
+                          margin: const EdgeInsets.only(left: 30),
                           height: 70,
-                          child:  Text(
+                          child: Text(
                             "Don't have an account ?",
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
@@ -108,17 +141,17 @@ class _LoginState extends State<Login> {
                             Get.to(() => const Signup());
                           },
                           child: Container(
-                            margin: const EdgeInsets.only( left: 5),
+                            margin: const EdgeInsets.only(left: 5),
                             height: 70,
-                            child:  Text(
+                            child: Text(
                               "Sign up !",
                               style: TextStyle(
-                                  color: Colors.deepOrangeAccent.shade100,
-                                  fontSize: 15,
+                                color: Colors.deepOrangeAccent.shade100,
+                                fontSize: 15,
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
 
@@ -127,18 +160,11 @@ class _LoginState extends State<Login> {
                       errorColor: Colors.redAccent,
                       resetDuration: const Duration(milliseconds: 1250),
                       color: Colors.deepOrangeAccent.shade100,
-                      successColor:  Colors.deepOrangeAccent,
+                      successColor: Colors.deepOrangeAccent,
                       controller: _btnController,
                       onPressed: () {
-                        setState(() async {
-                          await Future.delayed(const Duration(milliseconds: 0));
-                          _btnController.success();
-                          await Future.delayed(
-                            const Duration(milliseconds: 1750),
-                          );
-                          _btnController.reset();
-                          const Duration(milliseconds: 500);
-                          Get.offAll(() => const Landinpage());
+                        setState(() {
+                          login();
                         });
                       },
                       child: Text(

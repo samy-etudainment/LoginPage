@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login_page/models/auth_firebase.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:get/get.dart';
 import 'login.dart';
@@ -11,10 +13,37 @@ class Signup extends StatefulWidget {
 }
 
 class _LoginState extends State<Signup> {
+  final AuthController authController = Get.find<AuthController>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   static const String imageBackground = "assets/background.jpg";
-  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
+  
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void registration() async {
+    try {
+      await authController.createAccount(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      await Future.delayed(const Duration(milliseconds: 0));
+      _btnController.success();
+      const Duration(milliseconds: 1750);
+      Get.offAll(() => const Login());
+    } on FirebaseAuthException catch (e) {
+      _btnController.error();
+      await Future.delayed(const Duration(milliseconds: 1750));
+      _btnController.reset();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +51,7 @@ class _LoginState extends State<Signup> {
     final double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepOrangeAccent.shade100,
-      ),
+      appBar: AppBar(backgroundColor: Colors.deepOrangeAccent.shade100),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
@@ -58,7 +85,11 @@ class _LoginState extends State<Signup> {
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(right: 30, left: 30, top: 30),
+                      margin: const EdgeInsets.only(
+                        right: 30,
+                        left: 30,
+                        top: 30,
+                      ),
                       height: 70,
                       width: width,
                       child: TextField(
@@ -100,22 +131,15 @@ class _LoginState extends State<Signup> {
                       errorColor: Colors.redAccent,
                       resetDuration: const Duration(milliseconds: 1250),
                       color: Colors.deepOrangeAccent.shade100,
-                      successColor:  Colors.deepOrangeAccent,
+                      successColor: Colors.deepOrangeAccent,
                       controller: _btnController,
                       onPressed: () {
-                        setState(() async {
-                          await Future.delayed(const Duration(milliseconds: 0));
-                          _btnController.success();
-                          await Future.delayed(
-                            const Duration(milliseconds: 1750),
-                          );
-                          _btnController.reset();
-                          const Duration(milliseconds: 500);
-                          Get.offAll(() => const Login());
+                        setState(() {
+                          registration();
                         });
                       },
                       child: Text(
-                        "Continue",
+                        "Create the profile",
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
