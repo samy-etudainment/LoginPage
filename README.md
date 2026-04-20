@@ -1,10 +1,10 @@
-# 🔐 Flutter Login App
+# Flutter Login App
 
 A simple Flutter application with email/password authentication powered by **Firebase Auth** and user data stored in **Cloud Firestore**.
 
 ---
 
-## ✨ Features
+## Features
 
 - Email & password sign up / sign in
 - Firebase Authentication integration
@@ -26,25 +26,8 @@ A simple Flutter application with email/password authentication powered by **Fir
 
 ---
 
-## 📁 Project Structure
 
-```
-lib/
-├── main.dart
-├── screens/
-│   ├── login_screen.dart
-│   ├── register_screen.dart
-│   └── home_screen.dart
-├── services/
-│   ├── auth_service.dart
-│   └── firestore_service.dart
-└── models/
-    └── user_model.dart
-```
-
----
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
