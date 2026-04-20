@@ -68,7 +68,6 @@ class _LoginState extends State<Login> {
       await Future.delayed(const Duration(milliseconds: 1750));
       _btnController.reset();
 
-      print(userName);
       Get.offAll(
         () => const Landinpage(),
         arguments: {'userName': userName, 'userEmail': userEmail},

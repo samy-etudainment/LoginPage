@@ -47,7 +47,7 @@ class _LandinpageState extends State<Landinpage> {
         backgroundColor: Colors.deepOrangeAccent.shade100,
         title: Obx(() {
           return Text(
-            "Welcome ${userName}",
+            "Welcome $userName",
             style: TextStyle(fontSize: 22),
           );
         }),
