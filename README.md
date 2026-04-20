@@ -1,17 +1,146 @@
-# login_page
+# 🔐 Flutter Login App
 
-A new Flutter project.
+A simple Flutter application with email/password authentication powered by **Firebase Auth** and user data stored in **Cloud Firestore**.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## ✨ Features
 
-A few resources to get you started if this is your first Flutter project:
+- Email & password sign up / sign in
+- Firebase Authentication integration
+- User profile stored in Firestore
+- Form validation
+- Persistent session (stays logged in on app restart)
+- Logout
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Flutter (Dart) |
+| Authentication | Firebase Authentication |
+| Database | Cloud Firestore |
+| State | setState / Provider |
+
+---
+
+## 📁 Project Structure
+
+```
+lib/
+├── main.dart
+├── screens/
+│   ├── login_screen.dart
+│   ├── register_screen.dart
+│   └── home_screen.dart
+├── services/
+│   ├── auth_service.dart
+│   └── firestore_service.dart
+└── models/
+    └── user_model.dart
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Flutter SDK `>=3.0.0`
+- A [Firebase](https://firebase.google.com) project with **Authentication** and **Firestore** enabled
+
+### Installation
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+```
+
+**2. Install dependencies**
+```bash
+flutter pub get
+```
+
+**3. Connect Firebase**
+
+Install the Firebase CLI and FlutterFire CLI if not already done:
+```bash
+npm install -g firebase-tools
+dart pub global activate flutterfire_cli
+```
+
+Then configure your project:
+```bash
+firebase login
+flutterfire configure
+```
+
+This generates `lib/firebase_options.dart` automatically.
+
+**4. Run the app**
+```bash
+flutter run
+```
+
+---
+
+## 🔧 Firebase Setup
+
+### Authentication
+In the Firebase console, go to **Authentication → Sign-in method** and enable **Email/Password**.
+
+### Firestore
+In the Firebase console, go to **Firestore Database** and create a database in test mode.
+
+Recommended collection structure:
+```
+users/
+└── {uid}/
+    ├── email: string
+    ├── displayName: string
+    └── createdAt: timestamp
+```
+
+### Firestore Rules (basic)
+```js
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+---
+
+## 📦 Dependencies
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^2.x.x
+  firebase_auth: ^4.x.x
+  cloud_firestore: ^4.x.x
+```
+
+---
+
+## 📸 Screenshots
+
+> _Add your screenshots here_
+
+| Login | Register | Home |
+|---|---|---|
+| ![login]() | ![register]() | ![home]() |
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
