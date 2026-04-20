@@ -101,7 +101,7 @@ service cloud.firestore {
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 ```yaml
 dependencies:
@@ -113,17 +113,3 @@ dependencies:
 ```
 
 ---
-
-## 📸 Screenshots
-
-> _Add your screenshots here_
-
-| Login | Register | Home |
-|---|---|---|
-| ![login]() | ![register]() | ![home]() |
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
