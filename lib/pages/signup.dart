@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_page/models/auth_firebase.dart';
@@ -28,12 +29,27 @@ class _LoginState extends State<Signup> {
     super.dispose();
   }
 
+  //Function that create the user in the database
+  Future<void> uploadNameDatabase() async {
+    String email = _emailController.text;
+    String name = email.split('@')[0];
+    try {
+      await FirebaseFirestore.instance.collection("user_info").add({
+        "name": name,
+        "email": email,
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void registration() async {
     try {
       await authController.createAccount(
         email: _emailController.text,
         password: _passwordController.text,
       );
+      await uploadNameDatabase();
       await Future.delayed(const Duration(milliseconds: 0));
       _btnController.success();
       const Duration(milliseconds: 1750);

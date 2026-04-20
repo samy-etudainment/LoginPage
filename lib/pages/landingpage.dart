@@ -17,9 +17,12 @@ class Landinpage extends StatefulWidget {
 }
 
 class _LandinpageState extends State<Landinpage> {
+  final arguments = Get.arguments as Map<String, dynamic>?;
   final AuthController authController = Get.find<AuthController>();
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
+  String get userName => arguments?['userName'] ?? 'Utilisateur';
+  String get userEmail => arguments?['userEmail'] ?? '';
 
   void logOut() async {
     try {
@@ -43,9 +46,8 @@ class _LandinpageState extends State<Landinpage> {
       appBar: AppBar(
         backgroundColor: Colors.deepOrangeAccent.shade100,
         title: Obx(() {
-          final user = authController.currentUser.value;
           return Text(
-            "Welcome ${user?.email ?? 'Guest'}",
+            "Welcome ${userName}",
             style: TextStyle(fontSize: 22),
           );
         }),
@@ -84,6 +86,7 @@ class _LandinpageState extends State<Landinpage> {
                   ),
                 ),
               ),
+              Spacer(),
             ],
           ),
         ],

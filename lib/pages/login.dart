@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_page/models/auth_firebase.dart';
@@ -29,16 +30,49 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
+  Future<Map<String, dynamic>?> getUserDataByUID(String uid) async {
+    try {
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection("user_info")
+          .doc(uid)
+          .get();
+
+      if (docSnapshot.exists) {
+        final userData = docSnapshot.data();
+        return userData;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
   void login() async {
     try {
       await authController.login(
         email: _emailController.text,
         password: _passwordController.text,
       );
+      String userName = "";
+      String userEmail = _emailController.text.trim();
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection("user_info")
+          .where("email", isEqualTo: userEmail)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        userName = querySnapshot.docs.first.data()['name'] ?? '';
+      }
+
       _btnController.success();
       await Future.delayed(const Duration(milliseconds: 1750));
       _btnController.reset();
-      Get.offAll(() => const Landinpage());
+
+      print(userName);
+      Get.offAll(
+        () => const Landinpage(),
+        arguments: {'userName': userName, 'userEmail': userEmail},
+      );
     } on FirebaseAuthException {
       _btnController.error();
       await Future.delayed(const Duration(milliseconds: 1750));
