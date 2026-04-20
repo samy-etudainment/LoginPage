@@ -22,7 +22,7 @@ A simple Flutter application with email/password authentication powered by **Fir
 | Framework | Flutter (Dart) |
 | Authentication | Firebase Authentication |
 | Database | Cloud Firestore |
-| State | setState / Provider |
+| State | setState / GetX |
 
 ---
 
